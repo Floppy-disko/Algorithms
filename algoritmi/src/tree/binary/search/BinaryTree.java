@@ -8,16 +8,14 @@ public class BinaryTree<T extends Comparable<T>> {
 	protected BTNode root;
 	
 	public BinaryTree(T ...elems) {
-		this.createTree(elems);
+		createTree(elems);
 	}
 	
-	protected void createTree(T[] elems) {
-		
-		System.out.println("Funzione classe esterna");
+	protected void createTree(T[] elems) { //per BinaryTree basta aggiungere gli elementi uno alla volta
 		add(elems);
 	}
 	
-	public void add(T ...keys) {  //interfaccia pubblica di add per aggiungere un elemento all'albero
+	public void add(T ...keys) {  //interfaccia pubblica di add per aggiungere più elementi all'albero
 		
 		for(int i=0; i<keys.length; i++)
 			root = add(null, root, keys[i]);
@@ -46,7 +44,7 @@ public class BinaryTree<T extends Comparable<T>> {
 	}
 
 	protected void fixAdd(BTNode current) {
-		//Non serve fixare negli alberi binario
+		//Non serve fixare negli alberi binari di ricerca semplici
 	}
 	
 	public void inVisit(Consumer<BTNode> visitClass) {
@@ -54,7 +52,7 @@ public class BinaryTree<T extends Comparable<T>> {
 	}
 	
 	protected void inVisit(BTNode current, Consumer<BTNode> visitClass) {
-		if(current==null)  //non metto endOfBranch perchè l'invisit voglio che vad anche nei nod nil in RBTree
+		if(current==null)  //non metto endOfBranch perchè l'invisit voglio che vada anche nei nod nil in RBTree
 			return;
 		
 		inVisit(current.left, visitClass);
@@ -98,11 +96,6 @@ public class BinaryTree<T extends Comparable<T>> {
 			return key.toString();
 		}
 		
-	}
-	
-	public static void main(String[] args) {
-		BinaryTree<Integer> tree = new BinaryTree<Integer>(2,4,4,5);
-		tree.inVisit(System.out::println);
 	}
 
 }
