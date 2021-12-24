@@ -1,7 +1,9 @@
 package tree.binary.search;
 
 import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class BinaryTree<T extends Comparable<T>> {
 	
@@ -71,6 +73,23 @@ public class BinaryTree<T extends Comparable<T>> {
 		inVisit(current.left, arg, visitClass);
 		visitClass.accept(current, arg);
 		inVisit(current.right, arg, visitClass);
+	}
+	
+	//Ritorna il un tipo Z e accetta un argomento di tipo S, la funzione elabora i risultati di left e right
+	public <S,Z> Z postVisit(S arg, BiConsumer<Z[],S> visitClass, BiFunction<BTNode,Z[],Z> returnClass) {
+		return postVisit(root, arg, visitClass, returnClass);
+	}
+	
+	protected <S,Z> Z postVisit(BTNode current, S arg, BiConsumer<Z[],S> visitClass, BiFunction<BTNode,Z[],Z> returnClass) {
+		
+		if(current==null)
+			return null;
+		
+		Z left = postVisit(current.left, arg, visitClass, returnClass);
+		Z right = postVisit(current.right, arg, visitClass, returnClass);
+		Z[] results = (Z[])new Object[] {left, right};
+		visitClass.accept(results, arg);
+		return returnClass.apply(current, results);
 	}
 	
 	protected boolean endOfBranch(BTNode current) {
