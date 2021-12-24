@@ -20,17 +20,17 @@ public class RBTree<T extends Comparable<T>> extends BinaryTree<T> {
 		add(elems);
 	}
 
+	protected boolean endOfBranch(BTNode current) { // sovrascrivo perchè in questo caso sono arrivato alla fine se
+		// trovo un nodo nil
+		return current == nil;
+	}
+	
 	protected BTNode newNode(BTNode parent, T key) { // i nuovi nodi li creo rossi e con figli nil
 		return new RBTNode(parent, nil, nil, key, 1);
 	}
-
+	
 	protected void fixAdd() {
 		System.out.println("Nodo (non ancora fixato)");
-	}
-
-	protected boolean endOfBranch(BTNode current) { // sovrascrivo perchè in questo caso sono arrivato alla fine se
-													// trovoun nodo nil
-		return current == nil;
 	}
 
 	public boolean respectRBT() { // rispetta le 4 regole degli RBalberi? Utilizzata per scopi di debugging
@@ -96,18 +96,24 @@ public class RBTree<T extends Comparable<T>> extends BinaryTree<T> {
 		BooleanWrapper wrapper = new BooleanWrapper();
 		
 		//controlla che dimensione nera di albero sinistro e destro sia uguale
-		BiConsumer<Integer[], BooleanWrapper> lambda1=(results, w) -> { 
-			Integer first = results[0];  //faccio il tutto molto generale che funzioni con array di qualsiasi dimensione
-			for(Integer result: results)
-				if(result!=first)
+		BiConsumer<Object[], BooleanWrapper> lambda1=(results, w) -> {  //mi tocca passare un arary di object e poi castere ad integer perchè in BinaryTree non mi fa creare un array generico e devo passare da object
+			Object first = results[0];  //faccio il tutto molto generale che funzioni con array di qualsiasi dimensione
+			for(Object result: results)
+				if(result!=first) {
+					System.out.println(first + " - " + result);
 					w.setFlag(false);
+				}
 		};
 		
 		//somma dimensione nera dei due rami della radice del sottoalbero radicato in current e aggiunge 1 se current è nera
-		BiFunction<BTNode, Integer[], Integer> lambda2=(current, results) -> {
+		BiFunction<BTNode, Object[], Integer> lambda2=(current, results) -> {
 			Integer sum = 0;
-			for(Integer result: results)
-				sum += result;
+			
+			if(current==null)
+				return 0;
+			
+			for(Object result: results)
+				sum += (Integer)result;
 			
 			if(((RBTNode)current).color==0)
 				sum++;
@@ -128,19 +134,57 @@ public class RBTree<T extends Comparable<T>> extends BinaryTree<T> {
 			super(p, l, r, k);
 			color = c;
 		}
+		
+		public String toString() {
+			
+			if(this==nil)
+				return "nil";
+			
+			else if(key==null)
+				return "null";
+			
+			else
+				return key.toString();
+		}
 	}
 
 	public static void main(String[] args) {
 		// BinaryTree<Integer> tree = new BinaryTree<Integer>(2,4,4,5);
 		// tree.inVisit(System.out::println);
 
-		RBTree<Integer> tree2 = new RBTree<Integer>(1, 2, 4, 4, 3);
+		RBTree<Integer> tree2 = new RBTree<Integer>(4,5,6);
 		//tree2.inVisit(System.out::println);
-		/*Consumer<BinaryTree<Integer>.BTNode> lambda = (current) -> {
+		Consumer<BinaryTree<Integer>.BTNode> lambda = (current) -> {
 			System.out.println(((RBTree<Integer>.RBTNode) current).color);
 		};
 		tree2.inVisit(lambda);
-		*/
 		System.out.println(tree2.respect4());
+		
+		//testo il postVisit
+		BiConsumer<Object[],?> lambda1=(results, w) -> {  
+			Object first = results[0];
+			for(Object result: results)
+				if(result!=first) {
+					System.out.println(result);
+				}
+		};
+		
+		BiFunction<BinaryTree<Integer>.BTNode, Object[], Integer> lambda2=(current, results) -> {
+			Integer sum = 0;
+			
+			if(current==null)
+				return 0;
+			
+			for(Object result: results)
+				sum += (Integer)result;
+			
+			if(((RBTree<Integer>.RBTNode)current).color==0)
+				sum++;
+			
+			return sum;
+		};
+		
+		tree2.postVisit(null, lambda1, lambda2);
+
 	}
 }

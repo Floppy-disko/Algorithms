@@ -76,18 +76,18 @@ public class BinaryTree<T extends Comparable<T>> {
 	}
 	
 	//Ritorna il un tipo Z e accetta un argomento di tipo S, la funzione elabora i risultati di left e right
-	public <S,Z> Z postVisit(S arg, BiConsumer<Z[],S> visitClass, BiFunction<BTNode,Z[],Z> returnClass) {
+	public <S,Z> Z postVisit(S arg, BiConsumer<Object[],S> visitClass, BiFunction<BTNode,Object[],Z> returnClass) {
 		return postVisit(root, arg, visitClass, returnClass);
 	}
 	
-	protected <S,Z> Z postVisit(BTNode current, S arg, BiConsumer<Z[],S> visitClass, BiFunction<BTNode,Z[],Z> returnClass) {
+	protected <S,Z> Z postVisit(BTNode current, S arg, BiConsumer<Object[],S> visitClass, BiFunction<BTNode,Object[],Z> returnClass) {
 		
 		if(current==null)
-			return null;
+			return returnClass.apply(null, null);  //se arrivo alla fine ritorno l'elemento di default di ritorno di returnClass
 		
 		Z left = postVisit(current.left, arg, visitClass, returnClass);
 		Z right = postVisit(current.right, arg, visitClass, returnClass);
-		Z[] results = (Z[])new Object[] {left, right};
+		Object[] results = new Object[] {left, right};
 		visitClass.accept(results, arg);
 		return returnClass.apply(current, results);
 	}
