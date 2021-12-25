@@ -98,33 +98,33 @@ public class RBTree<T extends Comparable<T>> extends BinaryTree<T> {
 		//controlla che dimensione nera di albero sinistro e destro sia uguale
 		BiConsumer<Object[], BooleanWrapper> lambda1=(results, w) -> {  //mi tocca passare un arary di object e poi castere ad integer perchè in BinaryTree non mi fa creare un array generico e devo passare da object
 			Object first = results[0];  //faccio il tutto molto generale che funzioni con array di qualsiasi dimensione
-			for(Object result: results) {
-				System.out.println(first + " - " + result);
-				if(result!=first) {
+			for(Object result: results)
+				if(result!=first)
 					w.setFlag(false);
-				}
-			}
-			System.out.println("-----");
 		};
 		
 		//somma dimensione nera dei due rami della radice del sottoalbero radicato in current e aggiunge 1 se current è nera
-		BiFunction<BTNode, Object[], Integer> lambda2=(current, childsBHeights) -> {
-			Integer BHeight= 0;
+		TriFunction<BTNode, Object[], BooleanWrapper, Integer> lambda=(current, childsBHeights, w) -> {
 			
 			if(current==null)
 				return 0;
 			
-			BHeight=(Integer)childsBHeights[0]; //Prendo i la black height del figlio sinistro tanto se è diversa da quella del figlio destro ho gia posto a false 
+			Object first = childsBHeights[0];  //faccio il tutto molto generale che funzioni con array di qualsiasi dimensione
+			for(Object result: childsBHeights)
+				if(result!=first)
+					w.setFlag(false);
+			
+			Integer BHeight;
+			
+			BHeight=(Integer)first; //Prendo i la black height del figlio sinistro tanto se è diversa da quella del figlio destro ho gia posto a false 
 			
 			if(((RBTNode)current).color==0)
 				BHeight++;
 			
-			System.out.println(BHeight+"\n");
-			
 			return BHeight;
 		};
 		
-		postVisit(wrapper, lambda1, lambda2);
+		postVisit(wrapper, lambda);
 		
 		return wrapper.flag;
 	}
@@ -155,7 +155,7 @@ public class RBTree<T extends Comparable<T>> extends BinaryTree<T> {
 		//BinaryTree<Integer> tree = new BinaryTree<Integer>(2,4,4,5);
 		//tree.inVisit(System.out::println);
 
-		RBTree<Integer> tree2 = new RBTree<Integer>(5,4,6);
+		RBTree<Integer> tree2 = new RBTree<Integer>(4,5,6);
 		//System.out.println(tree2.root.left + " " + tree2.root + " " + tree2.root.right); //Solo per controllare la struttura effettiva
 		tree2.inVisit(System.out::println);
 		/*Consumer<BinaryTree<Integer>.BTNode> lambda = (current) -> {
