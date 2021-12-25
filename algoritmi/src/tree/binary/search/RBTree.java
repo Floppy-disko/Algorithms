@@ -98,27 +98,30 @@ public class RBTree<T extends Comparable<T>> extends BinaryTree<T> {
 		//controlla che dimensione nera di albero sinistro e destro sia uguale
 		BiConsumer<Object[], BooleanWrapper> lambda1=(results, w) -> {  //mi tocca passare un arary di object e poi castere ad integer perchè in BinaryTree non mi fa creare un array generico e devo passare da object
 			Object first = results[0];  //faccio il tutto molto generale che funzioni con array di qualsiasi dimensione
-			for(Object result: results)
+			for(Object result: results) {
+				System.out.println(first + " - " + result);
 				if(result!=first) {
-					System.out.println(first + " - " + result);
 					w.setFlag(false);
 				}
+			}
+			System.out.println("-----");
 		};
 		
 		//somma dimensione nera dei due rami della radice del sottoalbero radicato in current e aggiunge 1 se current è nera
-		BiFunction<BTNode, Object[], Integer> lambda2=(current, results) -> {
-			Integer sum = 0;
+		BiFunction<BTNode, Object[], Integer> lambda2=(current, childsBHeights) -> {
+			Integer BHeight= 0;
 			
 			if(current==null)
 				return 0;
 			
-			for(Object result: results)
-				sum += (Integer)result;
+			BHeight=(Integer)childsBHeights[0]; //Prendo i la black height del figlio sinistro tanto se è diversa da quella del figlio destro ho gia posto a false 
 			
 			if(((RBTNode)current).color==0)
-				sum++;
+				BHeight++;
 			
-			return sum;
+			System.out.println(BHeight+"\n");
+			
+			return BHeight;
 		};
 		
 		postVisit(wrapper, lambda1, lambda2);
@@ -149,42 +152,17 @@ public class RBTree<T extends Comparable<T>> extends BinaryTree<T> {
 	}
 
 	public static void main(String[] args) {
-		// BinaryTree<Integer> tree = new BinaryTree<Integer>(2,4,4,5);
-		// tree.inVisit(System.out::println);
+		//BinaryTree<Integer> tree = new BinaryTree<Integer>(2,4,4,5);
+		//tree.inVisit(System.out::println);
 
-		RBTree<Integer> tree2 = new RBTree<Integer>(4,5,6);
-		//tree2.inVisit(System.out::println);
-		Consumer<BinaryTree<Integer>.BTNode> lambda = (current) -> {
-			System.out.println(((RBTree<Integer>.RBTNode) current).color);
+		RBTree<Integer> tree2 = new RBTree<Integer>(5,4,6);
+		//System.out.println(tree2.root.left + " " + tree2.root + " " + tree2.root.right); //Solo per controllare la struttura effettiva
+		tree2.inVisit(System.out::println);
+		/*Consumer<BinaryTree<Integer>.BTNode> lambda = (current) -> {
+			System.out.println(((RBTree<Integer>.RBTNode) current).key);
 		};
 		tree2.inVisit(lambda);
-		System.out.println(tree2.respect4());
-		
-		//testo il postVisit
-		BiConsumer<Object[],?> lambda1=(results, w) -> {  
-			Object first = results[0];
-			for(Object result: results)
-				if(result!=first) {
-					System.out.println(result);
-				}
-		};
-		
-		BiFunction<BinaryTree<Integer>.BTNode, Object[], Integer> lambda2=(current, results) -> {
-			Integer sum = 0;
-			
-			if(current==null)
-				return 0;
-			
-			for(Object result: results)
-				sum += (Integer)result;
-			
-			if(((RBTree<Integer>.RBTNode)current).color==0)
-				sum++;
-			
-			return sum;
-		};
-		
-		tree2.postVisit(null, lambda1, lambda2);
-
+		*/
+		System.out.println(tree2.respect4()); //Problema: da false anche quando addo 3 nodi (quindi quando ogni percorso contiene uno e uno solo nodo nero (nil))
 	}
 }

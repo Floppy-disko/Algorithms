@@ -86,7 +86,9 @@ public class BinaryTree<T extends Comparable<T>> {
 			return returnClass.apply(null, null);  //se arrivo alla fine ritorno l'elemento di default di ritorno di returnClass
 		
 		Z left = postVisit(current.left, arg, visitClass, returnClass);
+		//System.out.println("l) " + left);
 		Z right = postVisit(current.right, arg, visitClass, returnClass);
+		//System.out.println("r) " + right);
 		Object[] results = new Object[] {left, right};
 		visitClass.accept(results, arg);
 		return returnClass.apply(current, results);
