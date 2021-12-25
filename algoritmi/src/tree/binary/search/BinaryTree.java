@@ -74,7 +74,7 @@ public class BinaryTree<T extends Comparable<T>> {
 		inVisit(current.right, arg, visitClass);
 	}
 	
-	//Ritorna il un tipo Z e accetta un argomento di tipo S, la funzione elabora i risultati di left e right
+	//Ritorna il un tipo Z e accetta un argomento di tipo S, la funzione elabora i risultati di left e right e può includere anche current nei clacoli
 	public <S,Z> Z postVisit(S arg, TriFunction<BTNode,Object[],S,Z> visitClass) {
 		return postVisit(root, arg, visitClass);
 	}
