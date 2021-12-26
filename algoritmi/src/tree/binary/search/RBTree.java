@@ -25,12 +25,32 @@ public class RBTree<T extends Comparable<T>> extends BinaryTree<T> {
 		return current == nil;
 	}
 	
-	protected BTNode newNode(BTNode parent, T key) { // i nuovi nodi li creo rossi e con figli nil
+	protected RBTNode newNode(BTNode parent, T key) { // i nuovi nodi li creo rossi e con figli nil
 		return new RBTNode(parent, nil, nil, key, 1);
 	}
 	
-	protected void fixAdd() {
-		System.out.println("Nodo (non ancora fixato)");
+	protected void fixAdd(BTNode x) {
+		System.out.println("Radice: " + root + " Elemento: " + x);
+		BTNode y; //terrà il valore dello zio di x
+		while(x.parent!=null && ((RBTNode)x.parent).color==1) { //se parent non esiste allora sono alla radice e ho terminato, non metto != root perchè quando chaimo fixAdd dopo aver raggiunto la radice root non punta ancora al nodo radice 
+			if(x.parent == x.parent.parent.left) {
+				y=x.parent.parent.right;
+				if(((RBTNode)y).color==0) {
+					((RBTNode)x.parent).color=0;
+					((RBTNode)y).color=0;
+					((RBTNode)x.parent.parent).color=1;
+					x=x.parent.parent;
+				} else {
+					if(x==x.parent.right) {
+						x=x.parent;
+					}
+				}
+				
+			} else { //se invece c.parent è figlio destro
+				
+			}
+		}
+		
 	}
 
 	public boolean respectRBT() { // rispetta le 4 regole degli RBalberi? Utilizzata per scopi di debugging
