@@ -196,14 +196,14 @@ public class RBTree<T extends Comparable<T>> extends BinaryTree<T> {
 		//BinaryTree<Integer> tree = new BinaryTree<Integer>(2,4,4,5);
 		//tree.inVisit(System.out::println);
 
-		RBTree<Integer> tree2 = new RBTree<Integer>(4,5,6);
+		RBTree<Integer> tree2 = new RBTree<Integer>(4);
 		//System.out.println(tree2.root.left + " " + tree2.root + " " + tree2.root.right); //Solo per controllare la struttura effettiva
-		tree2.inVisit(System.out::println);
-		/*Consumer<BinaryTree<Integer>.BTNode> lambda = (current) -> {
-			System.out.println(((RBTree<Integer>.RBTNode) current).key);
+		//tree2.inVisit(System.out::println);
+		Consumer<BinaryTree<Integer>.BTNode> lambda = (current) -> {
+			System.out.println(((RBTree<Integer>.RBTNode) current).color);
 		};
 		tree2.inVisit(lambda);
-		*/
-		System.out.println(tree2.respect4()); //Problema: da false anche quando addo 3 nodi (quindi quando ogni percorso contiene uno e uno solo nodo nero (nil))
+		
+		System.out.println(tree2.respectRBT()); 
 	}
 }

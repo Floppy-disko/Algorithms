@@ -112,11 +112,11 @@ public class BinaryTree<T extends Comparable<T>> {
 		
 		protected void rightRotate() {
 			BTNode y=this.left;
-			y.right.parent=this;
-			this.left=y.right;
-			y.right=this;
-			y.parent=this.parent;
-			this.parent=y;
+			y.right.parent=this; //il padre di beta diventa x
+			this.left=y.right; //il di x diventa beta
+			y.right=this; //x diventa figlio di y
+			y.parent=this.parent; //il padre di y diventa il vecchio padre di x
+			this.parent=y; //il padre di x diventa y
 			if(y.parent!=null)
 				if(this==y.parent.left) { //se x era figlio sx il nuovo figlio sx del padre diventa y, sennò se x era destro y diventa destro
 					y.parent.left=y;
@@ -126,7 +126,18 @@ public class BinaryTree<T extends Comparable<T>> {
 		}
 		
 		protected void leftRotate() {
-			
+			BTNode y=this.right;
+			y.left.parent=this;
+			this.right=y.left;
+			y.left=this;
+			y.parent=this.parent;
+			this.parent=y;
+			if(y.parent!=null)
+				if(this==y.parent.left) { //se x era figlio sx il nuovo figlio sx del padre diventa y, sennò se x era destro y diventa destro
+					y.parent.left=y;
+				} else {
+					y.parent.right=y;
+				}
 		}
 		
 		public String toString() {
