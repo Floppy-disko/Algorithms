@@ -4,6 +4,8 @@ import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 
+import tree.binary.search.BinaryTree.BTNode;
+
 public class BinaryTree<T extends Comparable<T>> {
 	
 	protected BTNode root;
@@ -106,6 +108,25 @@ public class BinaryTree<T extends Comparable<T>> {
 			left=l;
 			right=r;
 			key=k;
+		}
+		
+		protected void rightRotate() {
+			BTNode y=this.left;
+			y.right.parent=this;
+			this.left=y.right;
+			y.right=this;
+			y.parent=this.parent;
+			this.parent=y;
+			if(y.parent!=null)
+				if(this==y.parent.left) { //se x era figlio sx il nuovo figlio sx del padre diventa y, sennò se x era destro y diventa destro
+					y.parent.left=y;
+				} else {
+					y.parent.right=y;
+				}
+		}
+		
+		protected void leftRotate() {
+			
 		}
 		
 		public String toString() {

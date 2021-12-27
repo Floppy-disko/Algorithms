@@ -35,6 +35,25 @@ public class RBTree<T extends Comparable<T>> extends BinaryTree<T> {
 		while(x.parent!=null && ((RBTNode)x.parent).color==1) { //se parent non esiste allora sono alla radice e ho terminato, non metto != root perchè quando chaimo fixAdd dopo aver raggiunto la radice root non punta ancora al nodo radice 
 			if(x.parent == x.parent.parent.left) {
 				y=x.parent.parent.right;
+				if(((RBTNode)y).color==1) {
+					((RBTNode)x.parent).color=0;
+					((RBTNode)y).color=0;
+					((RBTNode)x.parent.parent).color=1;
+					x=x.parent.parent;
+				} else {
+					if(x==x.parent.right) {
+						x=x.parent;
+						x.leftRotate();
+					}
+					
+					((RBTNode)x.parent).color=0;
+					((RBTNode)x.parent.parent).color=1;
+					x.rightRotate();
+					x=root;
+				}
+				
+			} else { //se invece x.parent è figlio destro
+				y=x.parent.parent.left;
 				if(((RBTNode)y).color==0) {
 					((RBTNode)x.parent).color=0;
 					((RBTNode)y).color=0;
@@ -43,14 +62,16 @@ public class RBTree<T extends Comparable<T>> extends BinaryTree<T> {
 				} else {
 					if(x==x.parent.right) {
 						x=x.parent;
+						x.rightRotate();
 					}
+					
+					((RBTNode)x.parent).color=0;
+					((RBTNode)x.parent.parent).color=1;
+					x.leftRotate();
+					x=root;
 				}
-				
-			} else { //se invece c.parent è figlio destro
-				
 			}
-		}
-		
+		}	
 	}
 
 	public boolean respectRBT() { // rispetta le 4 regole degli RBalberi? Utilizzata per scopi di debugging
