@@ -21,25 +21,32 @@ public class BinaryTree<T extends Comparable<T>> {
 	public void add(T ...keys) {  //interfaccia pubblica di add per aggiungere più elementi all'albero
 		
 		for(int i=0; i<keys.length; i++)
-			root = add(null, root, keys[i]);
+			add(null, root, keys[i], 0);
 	}
 	
-	protected BTNode add(BTNode parent, BTNode current, T key) {  //creo un albero di profonditÃ  qualsiasi
+	protected void add(BTNode parent, BTNode current, T key, int son) {  //creo un albero di profonditÃ  qualsiasi
 		
-		if(endOfBranch(current)) {  //se sono al primo passo e la radice non esiste ancora la creo
+		if(root==null) {
+			root = newNode(null, key);
+			fixAdd(root);
+		}
+		
+		else if(endOfBranch(current)) {  //se sono al primo passo e la radice non esiste ancora la creo
 			current = newNode(parent, key);
+			if(son==0) //se è figlio sinistro
+				parent.left=current;
+			else
+				parent.right=current;
 			fixAdd(current);
 		}
 		
 		else if(key.compareTo(current.key)<0)  //se l'elemento è minore va a sinistra
-			current.left = add(current, current.left, key);
+			add(current, current.left, key, 0);
 		
 		else if(key.compareTo(current.key)>0) //se maggiore va a dx
-			current.right = add(current, current.right, key);
+			add(current, current.right, key, 1);
 		
 		//se è key è uguale alla key del nodo mi fermo e non aggiungo niente (non ci sono ripetizioni)
-			
-		return current;
 	}
 	
 	protected BTNode newNode(BTNode parent, T key) {  //rendo sta parte una funzione così se aumento il numero di campi del nodo non serve modificare tutto add ma ridefinire questa
@@ -113,7 +120,7 @@ public class BinaryTree<T extends Comparable<T>> {
 		protected void rightRotate() {
 			BTNode y=this.left;
 			y.right.parent=this; //il padre di beta diventa x
-			this.left=y.right; //il di x diventa beta
+			this.left=y.right; //il figlio di x diventa beta
 			y.right=this; //x diventa figlio di y
 			y.parent=this.parent; //il padre di y diventa il vecchio padre di x
 			this.parent=y; //il padre di x diventa y

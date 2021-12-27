@@ -16,7 +16,6 @@ public class RBTree<T extends Comparable<T>> extends BinaryTree<T> {
 
 	protected void createTree(T[] elems) { // Qua serve anche creare il nodo nil che sarà ogni foglia
 		nil = new RBTNode(null, null, null, null, 0);
-		root = nil;
 		add(elems);
 	}
 
@@ -44,40 +43,63 @@ public class RBTree<T extends Comparable<T>> extends BinaryTree<T> {
 					if(x==x.parent.right) {
 						x=x.parent;
 						x.leftRotate();
+						if(x==root) //se x era la radice, dopo la leftRotate la nuva radice sarà l'elemento alla che era alla sua dx, ora diventato suo genitore
+							root=x.parent;
+						x=root;
 					}
 					
 					((RBTNode)x.parent).color=0;
 					((RBTNode)x.parent.parent).color=1;
+					x=x.parent.parent;
 					x.rightRotate();
+					if(x==root) //se x era la radice, dopo la rightRotate la nuva radice sarà l'elemento che era alla sua sx
+						root=x.parent;
 					x=root;
 				}
 				
 			} else { //se invece x.parent è figlio destro
 				y=x.parent.parent.left;
-				if(((RBTNode)y).color==0) {
+				if(((RBTNode)y).color==1) {
 					((RBTNode)x.parent).color=0;
 					((RBTNode)y).color=0;
 					((RBTNode)x.parent.parent).color=1;
 					x=x.parent.parent;
 				} else {
-					if(x==x.parent.right) {
+					if(x==x.parent.left) {
 						x=x.parent;
 						x.rightRotate();
+						if(x==root) //se x era la radice, dopo la rightRotate la nuva radice sarà l'elemento che era alla sua sx
+							root=x.parent;
 					}
 					
 					((RBTNode)x.parent).color=0;
 					((RBTNode)x.parent.parent).color=1;
+					x=x.parent.parent;
 					x.leftRotate();
+					if(x==root) //se x era la radice, dopo la leftRotate la nuva radice sarà l'elemento che era alla sua dx
+						root=x.parent;
 					x=root;
 				}
 			}
-		}	
+		}
+		
+		if(x.parent==null) {  //se è la ardice rendila nera
+			((RBTNode)x).color=0;
+		}
 	}
 
 	public boolean respectRBT() { // rispetta le 4 regole degli RBalberi? Utilizzata per scopi di debugging
 
 		boolean flag;
-
+		if(!respect1())
+			System.out.println("Doesn't respect 1");
+		if(!respect2())
+			System.out.println("Doesn't respect 2");
+		if(!respect3())
+			System.out.println("Doesn't respect 3");
+		if(!respect4())
+			System.out.println("Doesn't respect 4");
+		
 		flag = respect1() && respect2() && respect3() && respect4();
 		return flag;
 	}
@@ -196,14 +218,14 @@ public class RBTree<T extends Comparable<T>> extends BinaryTree<T> {
 		//BinaryTree<Integer> tree = new BinaryTree<Integer>(2,4,4,5);
 		//tree.inVisit(System.out::println);
 
-		RBTree<Integer> tree2 = new RBTree<Integer>(4);
+		RBTree<Integer> tree2 = new RBTree<Integer>(10,11,12,14,3,2,1,0);
 		//System.out.println(tree2.root.left + " " + tree2.root + " " + tree2.root.right); //Solo per controllare la struttura effettiva
 		//tree2.inVisit(System.out::println);
 		Consumer<BinaryTree<Integer>.BTNode> lambda = (current) -> {
-			System.out.println(((RBTree<Integer>.RBTNode) current).color);
+			System.out.println(current.key + ") " + ((RBTree<Integer>.RBTNode) current).color);
 		};
 		tree2.inVisit(lambda);
 		
-		System.out.println(tree2.respectRBT()); 
+		System.out.println(tree2.respectRBT());
 	}
 }
