@@ -25,13 +25,13 @@ public class BinaryTree<T extends Comparable<T>> {
 	}
 	
 	protected void add(BTNode parent, BTNode current, T key, int son) {  //creo un albero di profonditÃ  qualsiasi
-		
-		if(root==null) {
+		//son indica se il primo o il secondo figlio di parent
+		if(rootMissing()) {  //se sono al primo passo e la radice non esiste ancora la creo
 			root = newNode(null, key);
 			fixAdd(root);
 		}
 		
-		else if(endOfBranch(current)) {  //se sono al primo passo e la radice non esiste ancora la creo
+		else if(endOfBranch(current)) { 
 			current = newNode(parent, key);
 			if(son==0) //se è figlio sinistro
 				parent.left=current;
@@ -47,6 +47,10 @@ public class BinaryTree<T extends Comparable<T>> {
 			add(current, current.right, key, 1);
 		
 		//se è key è uguale alla key del nodo mi fermo e non aggiungo niente (non ci sono ripetizioni)
+	}
+	
+	public boolean rootMissing() {
+		return root==null;
 	}
 	
 	protected BTNode newNode(BTNode parent, T key) {  //rendo sta parte una funzione così se aumento il numero di campi del nodo non serve modificare tutto add ma ridefinire questa

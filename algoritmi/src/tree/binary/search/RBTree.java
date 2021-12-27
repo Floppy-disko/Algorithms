@@ -16,7 +16,12 @@ public class RBTree<T extends Comparable<T>> extends BinaryTree<T> {
 
 	protected void createTree(T[] elems) { // Qua serve anche creare il nodo nil che sarà ogni foglia
 		nil = new RBTNode(null, null, null, null, 0);
+		root=nil;
 		add(elems);
+	}
+	
+	public boolean rootMissing() {
+		return root==nil;
 	}
 
 	protected boolean endOfBranch(BTNode current) { // sovrascrivo perchè in questo caso sono arrivato alla fine se
