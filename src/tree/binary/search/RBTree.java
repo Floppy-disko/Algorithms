@@ -9,13 +9,16 @@ import tree.binary.search.BinaryTree.BTNode;
 public class RBTree<T extends Comparable<T>> extends BinaryTree<T> {
 
 	protected RBTNode nil;
+	
+	protected static int BLACK=0;
+	protected static int RED=1;
 
 	protected RBTree(T... elems) {
 		super(elems);
 	}
 
 	protected void createTree(T[] elems) { // Qua serve anche creare il nodo nil che sarà ogni foglia
-		nil = new RBTNode(null, null, null, null, 0);
+		nil = new RBTNode(null, null, null, null, BLACK);
 		root=nil;
 		add(elems);
 	}
@@ -30,19 +33,19 @@ public class RBTree<T extends Comparable<T>> extends BinaryTree<T> {
 	}
 	
 	protected RBTNode newNode(BTNode parent, T key) { // i nuovi nodi li creo rossi e con figli nil
-		return new RBTNode(parent, nil, nil, key, 1);
+		return new RBTNode(parent, nil, nil, key, RED);
 	}
 	
 	protected void fixAdd(BTNode x) {
 		System.out.println("Radice: " + root + " Elemento: " + x);
 		BTNode y; //terrà il valore dello zio di x
-		while(x.parent!=null && ((RBTNode)x.parent).color==1) { //se parent non esiste allora sono alla radice e ho terminato, non metto != root perchè quando chaimo fixAdd dopo aver raggiunto la radice root non punta ancora al nodo radice 
+		while(x.parent!=null && ((RBTNode)x.parent).color==RED) { //se parent non esiste allora sono alla radice e ho terminato, non metto != root perchè quando chaimo fixAdd dopo aver raggiunto la radice root non punta ancora al nodo radice 
 			if(x.parent == x.parent.parent.left) {
 				y=x.parent.parent.right;
-				if(((RBTNode)y).color==1) {
-					((RBTNode)x.parent).color=0;
-					((RBTNode)y).color=0;
-					((RBTNode)x.parent.parent).color=1;
+				if(((RBTNode)y).color==RED) {
+					((RBTNode)x.parent).color=BLACK;
+					((RBTNode)y).color=BLACK;
+					((RBTNode)x.parent.parent).color=RED;
 					x=x.parent.parent;
 				} else {
 					if(x==x.parent.right) {
@@ -53,8 +56,8 @@ public class RBTree<T extends Comparable<T>> extends BinaryTree<T> {
 						x=root;
 					}
 					
-					((RBTNode)x.parent).color=0;
-					((RBTNode)x.parent.parent).color=1;
+					((RBTNode)x.parent).color=BLACK;
+					((RBTNode)x.parent.parent).color=RED;
 					x=x.parent.parent;
 					x.rightRotate();
 					if(x==root) //se x era la radice, dopo la rightRotate la nuva radice sarà l'elemento che era alla sua sx
@@ -64,10 +67,10 @@ public class RBTree<T extends Comparable<T>> extends BinaryTree<T> {
 				
 			} else { //se invece x.parent è figlio destro
 				y=x.parent.parent.left;
-				if(((RBTNode)y).color==1) {
-					((RBTNode)x.parent).color=0;
-					((RBTNode)y).color=0;
-					((RBTNode)x.parent.parent).color=1;
+				if(((RBTNode)y).color==RED) {
+					((RBTNode)x.parent).color=BLACK;
+					((RBTNode)y).color=BLACK;
+					((RBTNode)x.parent.parent).color=RED;
 					x=x.parent.parent;
 				} else {
 					if(x==x.parent.left) {
@@ -77,8 +80,8 @@ public class RBTree<T extends Comparable<T>> extends BinaryTree<T> {
 							root=x.parent;
 					}
 					
-					((RBTNode)x.parent).color=0;
-					((RBTNode)x.parent.parent).color=1;
+					((RBTNode)x.parent).color=BLACK;
+					((RBTNode)x.parent.parent).color=RED;
 					x=x.parent.parent;
 					x.leftRotate();
 					if(x==root) //se x era la radice, dopo la leftRotate la nuva radice sarà l'elemento che era alla sua dx
@@ -88,8 +91,8 @@ public class RBTree<T extends Comparable<T>> extends BinaryTree<T> {
 			}
 		}
 		
-		if(x.parent==null) {  //se è la ardice rendila nera
-			((RBTNode)x).color=0;
+		if(x.parent==null) {  //se è la radice rendila nera
+			((RBTNode)x).color=BLACK;
 		}
 	}
 
@@ -124,7 +127,7 @@ public class RBTree<T extends Comparable<T>> extends BinaryTree<T> {
 		BooleanWrapper wrapper = new BooleanWrapper();
 		
 		BiConsumer<BTNode, BooleanWrapper> lambda=(current, w) -> {
-			if(((RBTNode)current).color < 0 || ((RBTNode)current).color > 1)
+			if(((RBTNode)current).color < BLACK || ((RBTNode)current).color > RED)
 				w.setFlag(false);
 		};
 		
@@ -137,7 +140,7 @@ public class RBTree<T extends Comparable<T>> extends BinaryTree<T> {
 		BooleanWrapper wrapper = new BooleanWrapper();
 		
 		BiConsumer<BTNode, BooleanWrapper> lambda=(current, w) -> {
-			if(endOfBranch(current) && ((RBTNode)current).color!=0)
+			if(endOfBranch(current) && ((RBTNode)current).color!=BLACK)
 				w.setFlag(false);
 		};
 		
@@ -150,7 +153,7 @@ public class RBTree<T extends Comparable<T>> extends BinaryTree<T> {
 		BooleanWrapper wrapper = new BooleanWrapper();
 		
 		BiConsumer<BTNode, BooleanWrapper> lambda=(current, w) -> {
-			if(((RBTNode)current).color==1 && current.parent!=null && ((RBTNode)current.parent).color==1)  //prima constrollo se il padre esiste, poi controllo il suo colore
+			if(((RBTNode)current).color==RED && current.parent!=null && ((RBTNode)current.parent).color==RED)  //prima constrollo se il padre esiste, poi controllo il suo colore
 				w.setFlag(false);
 		};
 		
@@ -163,14 +166,7 @@ public class RBTree<T extends Comparable<T>> extends BinaryTree<T> {
 	public boolean respect4() {
 		BooleanWrapper wrapper = new BooleanWrapper();
 		
-		//controlla che dimensione nera di albero sinistro e destro sia uguale
-		BiConsumer<Object[], BooleanWrapper> lambda1=(results, w) -> {  //mi tocca passare un arary di object e poi castere ad integer perchè in BinaryTree non mi fa creare un array generico e devo passare da object
-			Object first = results[0];  //faccio il tutto molto generale che funzioni con array di qualsiasi dimensione
-			for(Object result: results)
-				if(result!=first)
-					w.setFlag(false);
-		};
-		
+		//controlla che dimensione nera dei rami radicati a sx e a dx sia uguale
 		//somma dimensione nera dei due rami della radice del sottoalbero radicato in current e aggiunge 1 se current è nera
 		TriFunction<BTNode, Object[], BooleanWrapper, Integer> lambda=(current, childsBHeights, w) -> {
 			
