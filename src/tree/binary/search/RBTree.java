@@ -10,15 +10,15 @@ public class RBTree<T extends Comparable<T>> extends BinaryTree<T> {
 
 	protected RBTNode nil;
 	
-	protected static int BLACK=0;
-	protected static int RED=1;
+	protected final static int BLACK=0;
+	protected final static int RED=1;
 
 	protected RBTree(T... elems) {
 		super(elems);
 	}
 
 	protected void createTree(T[] elems) { // Qua serve anche creare il nodo nil che sarà ogni foglia
-		nil = new RBTNode(null, null, null, null, BLACK);
+		nil = new RBTNode(null, null, null, null, BLACK);//
 		root=nil;
 		add(elems);
 	}
@@ -98,28 +98,22 @@ public class RBTree<T extends Comparable<T>> extends BinaryTree<T> {
 
 	public boolean respectRBT() { // rispetta le 4 regole degli RBalberi? Utilizzata per scopi di debugging
 
-		boolean flag;
-		if(!respect1())
+		boolean r1,r2,r3,r4,flag;
+		r1=respect1();
+		r2=respect2();
+		r3=respect3();
+		r4=respect4();
+		if(!r1)
 			System.out.println("Doesn't respect 1");
-		if(!respect2())
+		if(!r2)
 			System.out.println("Doesn't respect 2");
-		if(!respect3())
+		if(!r3)
 			System.out.println("Doesn't respect 3");
-		if(!respect4())
+		if(!r4)
 			System.out.println("Doesn't respect 4");
 		
-		flag = respect1() && respect2() && respect3() && respect4();
+		flag = r1 && r2 && r3 && r4;
 		return flag;
-	}
-	
-	public class BooleanWrapper {  //grazie a questo wrapper posso passare un BooleanWrapper (puntatore all'oggetto) ad un metodo e questo mi modifica il valore di flag
-		private boolean flag=true;
-		public boolean getFlag() {
-			return flag;
-		}
-		public void setFlag(boolean value) {
-			flag=value;
-		}
 	}
 	
 	public boolean respect1() {
@@ -170,7 +164,7 @@ public class RBTree<T extends Comparable<T>> extends BinaryTree<T> {
 		//somma dimensione nera dei due rami della radice del sottoalbero radicato in current e aggiunge 1 se current è nera
 		TriFunction<BTNode, Object[], BooleanWrapper, Integer> lambda=(current, childsBHeights, w) -> {
 			
-			if(current==null)
+			if(current==null)  //non metto ==nil perchè i nil devono ritornare 1 essendo neri e senza figli
 				return 0;
 			
 			Object first = childsBHeights[0];  //faccio il tutto molto generale che funzioni con array di qualsiasi dimensione
@@ -182,7 +176,7 @@ public class RBTree<T extends Comparable<T>> extends BinaryTree<T> {
 			
 			BHeight=(Integer)first; //Prendo i la black height del figlio sinistro tanto se è diversa da quella del figlio destro ho gia posto a false 
 			
-			if(((RBTNode)current).color==0)
+			if(((RBTNode)current).color==BLACK)
 				BHeight++;
 			
 			return BHeight;
@@ -190,7 +184,7 @@ public class RBTree<T extends Comparable<T>> extends BinaryTree<T> {
 		
 		postVisit(wrapper, lambda);
 		
-		return wrapper.flag;
+		return wrapper.getFlag();
 	}
 
 	protected class RBTNode extends BTNode {
@@ -219,7 +213,7 @@ public class RBTree<T extends Comparable<T>> extends BinaryTree<T> {
 		//BinaryTree<Integer> tree = new BinaryTree<Integer>(2,4,4,5);
 		//tree.inVisit(System.out::println);
 
-		RBTree<Integer> tree2 = new RBTree<Integer>(10,11,12,14,3,2,1,0);
+		RBTree<Integer> tree2 = new RBTree<Integer>(10,11,12,14,9,9,9,3,2,1,0,10);
 		//System.out.println(tree2.root.left + " " + tree2.root + " " + tree2.root.right); //Solo per controllare la struttura effettiva
 		//tree2.inVisit(System.out::println);
 		Consumer<BinaryTree<Integer>.BTNode> lambda = (current) -> {
