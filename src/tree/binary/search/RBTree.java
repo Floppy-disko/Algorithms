@@ -200,12 +200,9 @@ public class RBTree<T extends Comparable<T>> extends BinaryTree<T> {
 			
 			if(this==nil)
 				return "nil";
-			
-			else if(key==null)
-				return "null";
-			
+		
 			else
-				return key.toString();
+				return super.toString();
 		}
 	}
 
@@ -215,7 +212,7 @@ public class RBTree<T extends Comparable<T>> extends BinaryTree<T> {
 
 		RBTree<Integer> tree2 = new RBTree<Integer>(10,11,12,14,9,9,9,3,2,1,0,10);
 		//System.out.println(tree2.root.left + " " + tree2.root + " " + tree2.root.right); //Solo per controllare la struttura effettiva
-		//tree2.inVisit(System.out::println);
+		tree2.inVisit(System.out::println);
 		Consumer<BinaryTree<Integer>.BTNode> lambda = (current) -> {
 			System.out.println(current.key + ") " + ((RBTree<Integer>.RBTNode) current).color);
 		};
